@@ -1,0 +1,17 @@
+[package]
+name = "rtmp"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = { version = "1.18", features = ["full"] }
+uuid = { version = "1.0", features = ["v4"] }
+bytesio = { path = "../bytesio" }
+flv = { path = "../flv" }
+byteorder = "1.4"
+failure = "0.1"
+chrono = "0.4"
+bytes = "1.1"
+hmac = "0.11.0"
+sha2 = "0.9"
+log = "0.4"

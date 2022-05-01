@@ -1,0 +1,14 @@
+[workspace]
+
+members = [
+    "flv",
+    "bytesio",
+    "hls",
+    "httpflv",
+    "rtmp",
+    "xiu"
+]
+
+[profile.release]
+lto = true
+codegen-units = 1
