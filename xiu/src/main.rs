@@ -1,7 +1,13 @@
+use std::path::PathBuf;
+
+use config::{Config, Environment, FileSourceFile};
+use log::{max_level, set_max_level, LevelFilter};
+use simplelog::{ColorChoice, ConfigBuilder, LevelPadding, TermLogger, TerminalMode};
+use time::macros::format_description;
+
+use hls::rtmp_event_processor::RtmpEventProcessor;
 use {
-  //https://rustcc.cn/article?id=6dcbf032-0483-4980-8bfe-c64a7dfb33c7
   anyhow::Result,
-  //env_logger::{Builder, Target},
   hls::server as hls_server,
   httpflv::server as httpflv_server,
   rtmp::{
@@ -13,70 +19,50 @@ use {
   tokio,
   tokio::signal,
 };
-//use application::logger::logger;
-use hls::rtmp_event_processor::RtmpEventProcessor;
 
-pub use crate::config::config::load;
-use crate::config::config::Config;
+use crate::xiu_config::XiuConfig;
 
-mod config;
-mod logger;
+mod xiu_config;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-  let args: Vec<String> = env::args().collect();
+  TermLogger::init(
+    LevelFilter::Info,
+    ConfigBuilder::new()
+      .set_level_padding(LevelPadding::Right)
+      .set_time_format_custom(format_description!(
+        "[year]-[month]-[day] [hour]:[minute]:[second]"
+      ))
+      .build(),
+    TerminalMode::Mixed,
+    ColorChoice::Auto,
+  )?;
 
-  let cfg_path = &args[1];
-  let config = load(cfg_path);
+  let config = Config::builder()
+    .add_source(Environment::with_prefix("XIU").separator("_"))
+    .build()?
+    .try_deserialize::<XiuConfig>()?;
 
-  match config {
-    Ok(val) => {
-      /*set log level*/
+  println!("{:?}", config);
 
-      // flexi_logger::Logger::try_with_env_or_str("info")?.start()?;
-      // if let Some(log_config_value) = &val.log {
-      //     flexi_logger::Logger::try_with_env_or_str(log_config_value.level.clone())?
-      //         .start()?;
-      // }
-      if let Some(log_config_value) = &val.log {
-        env::set_var("RUST_LOG", log_config_value.level.clone());
-      } else {
-        env::set_var("RUST_LOG", "info");
-      }
-
-      // let mut builder = Builder::from_default_env();
-      // builder
-      //     .target(Target::Pipe(Box::new(logger::FileTarget::new(
-      //         logger::Rotate::Minute,
-      //         String::from("./logs"),
-      //     ))))
-      //     .init();
-
-      env_logger::init();
-
-      /*run the service*/
-      let mut serivce = Service::new(val);
-      serivce.run().await?;
-    }
-    _ => (),
+  if let Some(log) = &config.log {
+    let filter = &log.level.into();
+    set_max_level(*filter);
   }
 
-  // log::info!("log info...");
-  // log::warn!("log warn...");
-  // log::error!("log err...");
-  // log::trace!("log trace...");
-  // log::debug!("log debug...");
+  let mut service = Service::new(config);
+  service.run().await?;
 
   signal::ctrl_c().await?;
   Ok(())
 }
 
 pub struct Service {
-  cfg: Config,
+  cfg: XiuConfig,
 }
 
 impl Service {
-  pub fn new(cfg: Config) -> Self {
+  pub fn new(cfg: XiuConfig) -> Self {
     Service { cfg }
   }
 
@@ -154,7 +140,7 @@ impl Service {
         }
       }
 
-      let listen_port = rtmp_cfg_value.port;
+      let listen_port = rtmp_cfg_value.port.unwrap_or(1925);
       let address = format!("0.0.0.0:{port}", port = listen_port);
 
       let mut rtmp_server = RtmpServer::new(address, producer.clone());
@@ -176,7 +162,7 @@ impl Service {
       if !httpflv_cfg_value.enabled {
         return Ok(());
       }
-      let port = httpflv_cfg_value.port;
+      let port = httpflv_cfg_value.port.unwrap_or(8081);
       let event_producer = channel.get_session_event_producer().clone();
 
       tokio::spawn(async move {
