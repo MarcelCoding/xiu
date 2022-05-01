@@ -27,7 +27,7 @@ jobs:
           # - aarch64-unknown-freebsd <- std not precompiled
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - uses: actions-rs/toolchain@v1
         with:
