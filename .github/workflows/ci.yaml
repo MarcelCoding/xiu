@@ -51,7 +51,7 @@ jobs:
           target: ${{ matrix.target }}
           override: true
 
-      - run: cargo install --git https://github.com/cross-rs/cross.git # cross in crates.io is too old
+      - run: cargo install --force --git https://github.com/cross-rs/cross.git # cross in crates.io is too old
 
       - name: Build
         continue-on-error: ${{ matrix.channel != 'stable' }}
