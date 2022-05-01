@@ -1,0 +1,15 @@
+[package]
+name = "httpflv"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = { version = "1.18", features = ["full"] }
+hyper = { version = "0.14", features = ["full"] }
+uuid = { version = "1.0", features = ["v4"] }
+rtmp = { path = "../rtmp" }
+flv = { path = "../flv" }
+failure = "0.1"
+futures = "0.3"
+bytes = "1.1"
+log = "0.4"
