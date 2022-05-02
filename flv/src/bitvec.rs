@@ -29,7 +29,7 @@ impl Mpeg4BitVec {
 
   pub fn extend_from_bytesmut(&mut self, data: BytesMut) {
     for ele in data {
-      let bit = BitSlice::<Msb0, _>::from_element(&ele);
+      let bit = BitSlice::<_, Msb0>::from_element(&ele);
       self.data.extend_from_bitslice(bit);
     }
   }
