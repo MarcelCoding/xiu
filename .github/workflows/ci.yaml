@@ -12,23 +12,12 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ format('{0}-latest', matrix.os) }}
 
     strategy:
       matrix:
         channel: [ stable ]
-        target:
-          # https://doc.rust-lang.org/nightly/rustc/platform-support.html
-          - x86_64-unknown-linux-gnu
-          - aarch64-unknown-linux-gnu
-          - armv7-unknown-linux-gnueabihf # rpi
-
-          - x86_64-unknown-linux-musl
-          - aarch64-unknown-linux-musl
-          - armv7-unknown-linux-musleabihf # rpi
-
-          - x86_64-unknown-freebsd
-          # - aarch64-unknown-freebsd <- std not precompiled
+        os: [ windows, ubuntu, macos ]
 
     steps:
       - uses: actions/checkout@v2
@@ -51,27 +40,30 @@ jobs:
           target: ${{ matrix.target }}
           override: true
 
-      - run: cargo install --force --git https://github.com/cross-rs/cross.git # cross in crates.io is too old
-
       - name: Build
         continue-on-error: ${{ matrix.channel != 'stable' }}
-        run: cross build --release --target ${{ matrix.target }}
+        run: cargo build --release --package xiu --bin xiu
 
       - name: Rename binary
-        run: mv target/${{ matrix.target }}/release/xiu xiu_${{ matrix.target }}
+        if: matrix.os != 'windows'
+        run: mv target/release/xiu xiu_${{ matrix.os }}
+
+      - name: Rename binary (win)
+        if: matrix.os == 'windows'
+        run: mv target/release/xiu.exe xiu_${{ matrix.os }}.exe
 
       - uses: actions/upload-artifact@v2
         if: ${{ matrix.channel == 'stable' }}
         with:
-          name: xiu_${{ matrix.target }}
-          path: xiu_${{ matrix.target }}
+          name: xiu_${{ matrix.os }}
+          path: xiu_${{ matrix.os }}*
 
       - uses: alexellis/upload-assets@0.3.0
-        if: startsWith(github.ref, 'refs/tags/')
+        if: startsWith(github.ref, 'refs/tags/') && matrix.channel == 'stable'
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
-          asset_paths: '["xiu_${{ matrix.target }}"]'
+          asset_paths: '["xiu_${{ matrix.os }}*"]'
 
   docker:
     needs: build

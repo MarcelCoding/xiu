@@ -5,7 +5,7 @@ WORKDIR /src
 # TODO: improve caching
 COPY . .
 
-RUN cargo build --release
+RUN cargo build --release --package xiu --bin xiu
 
 FROM debian:11-slim
 
