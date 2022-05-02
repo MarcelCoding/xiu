@@ -61,7 +61,7 @@ pub struct Mpeg4Avc {
 }
 
 pub fn print(data: BytesMut) {
-  print!("==========={}\n", data.len());
+  println!("==========={}", data.len());
   let mut idx = 0;
   for i in data {
     print!("{:02X} ", i);
@@ -74,7 +74,7 @@ pub fn print(data: BytesMut) {
     }
   }
 
-  print!("===========\n")
+  println!("===========")
 }
 
 impl Mpeg4Avc {

@@ -5,6 +5,8 @@ mod tests {
   use std::time::Instant;
 
   use bytes::BytesMut;
+  use flv::define::FlvData;
+  use flv::demuxer::FlvDemuxer;
 
   use xflv::define::FlvData;
   use xflv::demuxer::FlvDemuxer;
@@ -14,7 +16,7 @@ mod tests {
 
   #[allow(dead_code)]
   pub fn print(data: BytesMut) {
-    print!("==========={}\n", data.len());
+    println!("==========={}", data.len());
     let mut idx = 0;
     for i in data {
       print!("{:02X} ", i);
@@ -27,7 +29,7 @@ mod tests {
       }
     }
 
-    print!("===========\n")
+    println!("===========")
   }
 
   #[allow(dead_code)]
