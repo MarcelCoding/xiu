@@ -10,7 +10,7 @@ pub struct ProtocolControlMessagesWriter {
 
 impl ProtocolControlMessagesWriter {
   pub fn new(writer: AsyncBytesWriter) -> Self {
-    Self { writer: writer }
+    Self { writer }
   }
   pub fn write_control_message_header(
     &mut self,

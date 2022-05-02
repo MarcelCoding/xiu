@@ -12,7 +12,7 @@ pub struct Amf0Writer {
 
 impl Amf0Writer {
   pub fn new(writer: BytesWriter) -> Self {
-    Self { writer: writer }
+    Self { writer }
   }
   pub fn write_anys(&mut self, values: &Vec<Amf0ValueType>) -> Result<(), Amf0WriteError> {
     for val in values {
@@ -45,7 +45,7 @@ impl Amf0Writer {
   }
 
   pub fn write_string(&mut self, value: &String) -> Result<(), Amf0WriteError> {
-    if value.len() > (u16::max_value() as usize) {
+    if value.len() > u16::MAX as usize {
       return Err(Amf0WriteError {
         value: Amf0WriteErrorValue::NormalStringTooLong,
       });

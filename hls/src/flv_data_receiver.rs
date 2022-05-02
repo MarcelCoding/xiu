@@ -121,7 +121,7 @@ impl FlvDataReceiver {
       let subscribe_event = ChannelEvent::Subscribe {
         app_name: app_name.clone(),
         stream_name: stream_name.clone(),
-        session_info: session_info,
+        session_info,
         responder: sender,
       };
 

@@ -62,8 +62,8 @@ impl Transmiter {
     event_consumer: UnboundedReceiver<TransmitEvent>,
   ) -> Self {
     Self {
-      data_consumer: data_consumer,
-      event_consumer: event_consumer,
+      data_consumer,
+      event_consumer,
       subscriberid_to_producer: Arc::new(Mutex::new(HashMap::new())),
       cache: Arc::new(Mutex::new(Cache::new())),
     }
@@ -318,7 +318,7 @@ impl ChannelsManager {
     app_name: &String,
     stream_name: &String,
     session_info: SessionInfo,
-  ) -> Result<mpsc::UnboundedReceiver<ChannelData>, ChannelError> {
+  ) -> Result<UnboundedReceiver<ChannelData>, ChannelError> {
     if let Some(val) = self.channels.get_mut(app_name) {
       if let Some(producer) = val.get_mut(stream_name) {
         let (sender, receiver) = oneshot::channel();
@@ -420,7 +420,7 @@ impl ChannelsManager {
       }
     }
 
-    if let Some(stream_map) = self.channels.get_mut(app_name) {
+    return if let Some(stream_map) = self.channels.get_mut(app_name) {
       let (event_publisher, event_consumer) = mpsc::unbounded_channel();
       let (data_publisher, data_consumer) = mpsc::unbounded_channel();
 
@@ -463,12 +463,12 @@ impl ChannelsManager {
           })?;
       }
 
-      return Ok(data_publisher);
+      Ok(data_publisher)
     } else {
-      return Err(ChannelError {
+      Err(ChannelError {
         value: ChannelErrorValue::NoAppName,
-      });
-    }
+      })
+    };
   }
 
   fn unpublish(&mut self, app_name: &String, stream_name: &String) -> Result<(), ChannelError> {

@@ -1,7 +1,6 @@
-use std::fs;
 use std::vec::Vec;
 
-use log::{Level, LevelFilter};
+use log::LevelFilter;
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize, Clone)]

@@ -170,7 +170,7 @@ impl HttpFlv {
       let subscribe_event = ChannelEvent::Subscribe {
         app_name: self.app_name.clone(),
         stream_name: self.stream_name.clone(),
-        session_info: session_info,
+        session_info,
         responder: sender,
       };
 

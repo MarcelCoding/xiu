@@ -8,9 +8,6 @@ mod tests {
   use flv::define::FlvData;
   use flv::demuxer::FlvDemuxer;
 
-  use xflv::define::FlvData;
-  use xflv::demuxer::FlvDemuxer;
-
   use crate::errors::MediaError;
   use crate::flv2hls::Flv2HlsRemuxer;
 

@@ -118,13 +118,13 @@ impl ChunkUnpacketizer {
       f(&self.chunk_read_state)
     );
 
-    if chunks.len() > 0 {
-      return Ok(UnpackResult::Chunks(chunks));
+    return if chunks.len() > 0 {
+      Ok(UnpackResult::Chunks(chunks))
     } else {
-      return Err(UnpackError {
+      Err(UnpackError {
         value: UnpackErrorValue::EmptyChunks,
-      });
-    }
+      })
+    };
   }
 
   /******************************************************************************

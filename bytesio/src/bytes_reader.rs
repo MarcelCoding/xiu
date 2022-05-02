@@ -159,7 +159,7 @@ mod tests {
 
   impl RefStruct {
     pub fn new(reader: Rc<RefCell<BytesReader>>) -> Self {
-      Self { reader: reader }
+      Self { reader }
     }
 
     // pub fn read_u8(&mut self) -> u8 {

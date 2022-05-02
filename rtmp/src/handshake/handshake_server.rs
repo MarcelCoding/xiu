@@ -296,11 +296,11 @@ impl HandshakeServer {
   }
 
   pub fn state(&mut self) -> ServerHandshakeState {
-    if self.is_complex {
-      return self.complex_handshaker.state;
+    return if self.is_complex {
+      self.complex_handshaker.state
     } else {
-      return self.simple_handshaker.state;
-    }
+      self.simple_handshaker.state
+    };
   }
 
   pub fn get_remaining_bytes(&mut self) -> BytesMut {

@@ -12,7 +12,7 @@ pub struct Amf0Reader {
 
 impl Amf0Reader {
   pub fn new(reader: BytesReader) -> Self {
-    Self { reader: reader }
+    Self { reader }
   }
   pub fn read_all(&mut self) -> Result<Vec<Amf0ValueType>, Amf0ReadError> {
     let mut results = vec![];

@@ -10,7 +10,7 @@ pub struct ProtocolControlMessageReader {
 
 impl ProtocolControlMessageReader {
   pub fn new(reader: BytesReader) -> Self {
-    Self { reader: reader }
+    Self { reader }
   }
   pub fn read_set_chunk_size(&mut self) -> Result<u32, ProtocolControlMessageReaderError> {
     let chunk_size = self.reader.read_u32::<BigEndian>()?;

@@ -1,7 +1,5 @@
-use std::path::PathBuf;
-
-use config::{Config, Environment, FileSourceFile};
-use log::{max_level, set_max_level, LevelFilter};
+use config::{Config, Environment};
+use log::{set_max_level, LevelFilter};
 use simplelog::{ColorChoice, ConfigBuilder, LevelPadding, TermLogger, TerminalMode};
 use time::macros::format_description;
 
@@ -15,7 +13,6 @@ use {
     relay::{pull_client::PullClient, push_client::PushClient},
     rtmp::RtmpServer,
   },
-  std::env,
   tokio,
   tokio::signal,
 };

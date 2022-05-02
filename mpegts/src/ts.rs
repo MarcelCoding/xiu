@@ -81,8 +81,7 @@ impl TsMuxer {
     let cur_stream = cur_pmt.streams.get_mut(self.cur_stream_index).unwrap();
 
     if 0x1FFF == cur_pmt.pcr_pid
-      || (define::epes_stream_id::PES_SID_VIDEO
-        == (cur_stream.stream_id & define::epes_stream_id::PES_SID_VIDEO)
+      || (epes_stream_id::PES_SID_VIDEO == (cur_stream.stream_id & epes_stream_id::PES_SID_VIDEO)
         && (cur_pmt.pcr_pid != cur_stream.pid))
     {
       cur_pmt.pcr_pid = cur_stream.pid;

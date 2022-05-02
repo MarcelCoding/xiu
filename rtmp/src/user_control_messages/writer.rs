@@ -12,7 +12,7 @@ pub struct EventMessagesWriter {
 
 impl EventMessagesWriter {
   pub fn new(writer: AsyncBytesWriter) -> Self {
-    Self { writer: writer }
+    Self { writer }
   }
   fn write_control_message_header(&mut self, len: u32) -> Result<(), EventMessagesError> {
     //0 1 2 3 4 5 6 7
