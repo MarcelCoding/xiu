@@ -1,21 +1,18 @@
+use anyhow::Result;
 use config::{Config, Environment};
 use log::{set_max_level, LevelFilter};
 use simplelog::{ColorChoice, ConfigBuilder, LevelPadding, TermLogger, TerminalMode};
 use time::macros::format_description;
+use tokio;
+use tokio::signal;
 
 use hls::rtmp_event_processor::RtmpEventProcessor;
-use {
-  anyhow::Result,
-  hls::server as hls_server,
-  httpflv::server as httpflv_server,
-  rtmp::{
-    channels::channels::ChannelsManager,
-    relay::{pull_client::PullClient, push_client::PushClient},
-    rtmp::RtmpServer,
-  },
-  tokio,
-  tokio::signal,
-};
+use hls::server as hls_server;
+use httpflv::server as httpflv_server;
+use rtmp::channels::channels::ChannelsManager;
+use rtmp::relay::pull_client::PullClient;
+use rtmp::relay::push_client::PushClient;
+use rtmp::rtmp::RtmpServer;
 
 use crate::xiu_config::XiuConfig;
 
@@ -47,20 +44,20 @@ async fn main() -> Result<()> {
     set_max_level(*filter);
   }
 
-  let mut service = Service::new(config);
+  let mut service = Xiu::new(config);
   service.run().await?;
 
   signal::ctrl_c().await?;
   Ok(())
 }
 
-pub struct Service {
-  cfg: XiuConfig,
+pub struct Xiu {
+  config: XiuConfig,
 }
 
-impl Service {
-  pub fn new(cfg: XiuConfig) -> Self {
-    Service { cfg }
+impl Xiu {
+  pub fn new(config: XiuConfig) -> Self {
+    Xiu { config }
   }
 
   async fn run(&mut self) -> Result<()> {
@@ -76,7 +73,7 @@ impl Service {
   }
 
   async fn start_rtmp(&mut self, channel: &mut ChannelsManager) -> Result<()> {
-    let rtmp_cfg = &self.cfg.rtmp;
+    let rtmp_cfg = &self.config.rtmp;
 
     if let Some(rtmp_cfg_value) = rtmp_cfg {
       if !rtmp_cfg_value.enabled {
@@ -153,7 +150,7 @@ impl Service {
   }
 
   async fn start_httpflv(&mut self, channel: &mut ChannelsManager) -> Result<()> {
-    let httpflv_cfg = &self.cfg.httpflv;
+    let httpflv_cfg = &self.config.httpflv;
 
     if let Some(httpflv_cfg_value) = httpflv_cfg {
       if !httpflv_cfg_value.enabled {
@@ -174,7 +171,7 @@ impl Service {
   }
 
   async fn start_hls(&mut self, channel: &mut ChannelsManager) -> Result<()> {
-    let hls_cfg = &self.cfg.hls;
+    let hls_cfg = &self.config.hls;
 
     if let Some(hls_cfg_value) = hls_cfg {
       if !hls_cfg_value.enabled {

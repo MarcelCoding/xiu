@@ -1,15 +1,17 @@
-use {
-  super::{
-    bytes_errors::{BytesWriteError, BytesWriteErrorValue},
-    bytesio::BytesIO,
-  },
-  byteorder::{ByteOrder, WriteBytesExt},
-  bytes::BytesMut,
-  rand,
-  rand::Rng,
-  std::{io::Write, sync::Arc, time::Duration},
-  tokio::{sync::Mutex, time::timeout},
-};
+use std::io::Write;
+use std::sync::Arc;
+use std::time::Duration;
+
+use byteorder::{ByteOrder, WriteBytesExt};
+use bytes::BytesMut;
+use rand;
+use rand::Rng;
+use tokio::sync::Mutex;
+use tokio::time::timeout;
+
+use super::bytes_errors::BytesWriteError;
+use super::bytes_errors::BytesWriteErrorValue;
+use super::bytesio::BytesIO;
 
 pub struct BytesWriter {
   pub bytes: Vec<u8>,
