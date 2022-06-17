@@ -37,8 +37,6 @@ async fn main() -> Result<()> {
     .build()?
     .try_deserialize::<XiuConfig>()?;
 
-  println!("{:?}", config);
-
   if let Some(log) = &config.log {
     let filter = &log.level.into();
     set_max_level(*filter);
