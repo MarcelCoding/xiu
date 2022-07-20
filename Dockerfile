@@ -1,6 +1,15 @@
-FROM rust:slim AS builder
+FROM rust:slim AS chef
 
 RUN update-ca-certificates
+
+RUN cargo install cargo-chef
+WORKDIR /xiu
+
+FROM chef AS planner
+COPY . .
+RUN cargo chef prepare --recipe-path recipe.json
+
+FROM chef AS builder
 
 ENV USER=xiu
 ENV UID=10001
@@ -14,10 +23,12 @@ RUN adduser \
     --uid "${UID}" \
     "${USER}"
 
-WORKDIR /xiu
+COPY --from=planner /xiu/recipe.json recipe.json
+
+RUN cargo chef cook --release --recipe-path recipe.json
 
 COPY . .
-RUN cargo build --release --package xiu --bin xiu
+RUN cargo build --release --package xiu
 
 FROM gcr.io/distroless/cc
 
@@ -30,4 +41,4 @@ COPY --from=builder /xiu/target/release/xiu ./xiu
 
 USER xiu:xiu
 
-CMD ["/xiu/xiu"]
+ENTRYPOINT ["/xiu/xiu"]
