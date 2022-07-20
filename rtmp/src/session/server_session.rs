@@ -13,7 +13,10 @@ use {
       unpacketizer::{ChunkUnpacketizer, UnpackResult},
     },
     config,
-    handshake::{define::ServerHandshakeState, handshake_server::HandshakeServer},
+    handshake::{
+      define::{ServerHandshakeState, RTMP_HANDSHAKE_SIZE},
+      handshake_server::HandshakeServer,
+    },
     messages::{define::RtmpMessageData, parser::MessageParser},
     netconnection::writer::NetConnection,
     netstream::writer::NetStreamWriter,
@@ -104,9 +107,14 @@ impl ServerSession {
   }
 
   async fn handshake(&mut self) -> Result<(), SessionError> {
-    self.bytesio_data = self.io.lock().await.read().await?;
+    let mut bytes_len = 0;
 
-    self.handshaker.extend_data(&self.bytesio_data[..]);
+    while bytes_len < RTMP_HANDSHAKE_SIZE {
+      self.bytesio_data = self.io.lock().await.read().await?;
+      bytes_len += self.bytesio_data.len();
+      self.handshaker.extend_data(&self.bytesio_data[..]);
+    }
+
     self.handshaker.handshake().await?;
 
     match self.handshaker.state() {
