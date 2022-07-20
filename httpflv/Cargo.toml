@@ -11,5 +11,5 @@ rtmp = { path = "../rtmp" }
 flv = { path = "../flv" }
 failure = "0.1"
 futures = "0.3"
-bytes = "1.1"
+bytes = "1.2"
 log = "0.4"

@@ -11,7 +11,7 @@ flv = { path = "../flv" }
 byteorder = "1.4"
 failure = "0.1"
 chrono = "0.4"
-bytes = "1.1"
+bytes = "1.2"
 hmac = "0.12"
 sha2 = "0.10"
 log = "0.4"
