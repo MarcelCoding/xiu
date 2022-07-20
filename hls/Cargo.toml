@@ -13,5 +13,5 @@ mpegts = { path = "../mpegts" }
 rtmp = { path = "../rtmp" }
 flv = { path = "../flv" }
 failure = "0.1"
-bytes = "1.1"
+bytes = "1.2"
 log = "0.4"
