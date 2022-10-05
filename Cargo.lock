@@ -1026,7 +1026,7 @@ checksum = "48dfff04aade74dd495b007c831cd6f4e0cee19c344dd9dc0884c0289b70a786"
 dependencies = [
  "log",
  "termcolor",
- "time 0.3.11",
+ "time 0.3.15",
 ]
 
 [[package]]
@@ -1111,9 +1111,9 @@ dependencies = [
 
 [[package]]
 name = "time"
-version = "0.3.11"
+version = "0.3.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "72c91f41dcb2f096c05f0873d667dceec1087ce5bcf984ec8ffb19acddbb3217"
+checksum = "d634a985c4d4238ec39cacaed2e7ae552fbd3c476b552c1deac3021b7d7eaf0c"
 dependencies = [
  "itoa",
  "libc",
@@ -1383,7 +1383,7 @@ dependencies = [
  "rtmp",
  "serde",
  "simplelog",
- "time 0.3.11",
+ "time 0.3.15",
  "tokio",
  "toml",
 ]
