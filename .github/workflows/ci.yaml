@@ -20,7 +20,7 @@ jobs:
         os: [ windows, ubuntu, macos ]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3.1.0
 
       - uses: actions/cache@v3
         with:
@@ -73,7 +73,7 @@ jobs:
       packages: write
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3.1.0
 
       - name: Docker meta
         id: meta
